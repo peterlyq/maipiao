@@ -106,7 +106,7 @@ const router= new Router({
 })
 let whiteList= ['/city']
 router.beforeEach((to,from,next)=>{
-  if(whiteList.indexOf(to.path) == -1 && !store.state.cityId){
+  if(whiteList.indexOf(to.path) === -1 && !store.state.cityId) {
     next('/city')
     return
   }

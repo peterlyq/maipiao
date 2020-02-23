@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="film-list">
-    <banner :data="bannerLists" v-if="bannerLists.length"></banner>
+    <banner :data="bannerLists" v-if= "bannerLists?bannerLists.length:''"></banner>
         <van-sticky @scroll="onScroll">
              <film-header v-show="isShow"></film-header>
             <tab-nav></tab-nav>

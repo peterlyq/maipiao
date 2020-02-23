@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "axios": "^0.19.0",
+    "cheerio": "^1.0.0-rc.3",
     "core-js": "^2.6.5",
     "swiper": "^5.0.4",
     "vant": "^2.2.6",

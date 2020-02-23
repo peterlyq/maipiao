@@ -9,7 +9,7 @@ export const getCinemaList = () =>{
 }
 export const getCinemaInfo = (params = {cid:4954}) =>{
     return request({
-        url:`/gateway/?cinemaId=1728&k=218101`,
+        url:`/gateway/?cinemaId=${params.cid}&k=218101`,
         data:{
             xHost:'mall.film-ticket.cinema.info'
         }

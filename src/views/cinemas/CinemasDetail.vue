@@ -35,7 +35,7 @@
         class="address-des"
         data-enter-time="1571141222"
         data-click-fun="track_f_816439"
-      >北京市宣武区大栅栏街36号</div>
+      >{{cinemaInfo.address}}</div>
       <a
         data-v-1ed7d58f
         href="tel:010-63083312/63030878"
@@ -71,6 +71,7 @@ export default {
     "$route.params.cid": {
       handler(val) {
         this.cid = val;
+        console.log(this.cid)
         this.getCinemaDetail();
         this.getFilms();
       },
@@ -81,6 +82,7 @@ export default {
     getCinemaDetail() {
       getCinemaInfo({ cid: this.cid }).then(res => {
         this.cinemaInfo = res.data.cinema;
+        console.log(this.cinemaInfo)
       });
     },
     getFilms() {

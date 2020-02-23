@@ -36,10 +36,10 @@ service.interceptors.request.use(
      */
     response => {
       const res = response.data
-  
+      console.log(res)
       // if the custom code is not 20000, it is judged as an error.
       if (res.status !== 0) {
-        console.log('请求有误',res.msg)
+        // console.log('请求有误',res.msg)
         return res
       } else {
         return res

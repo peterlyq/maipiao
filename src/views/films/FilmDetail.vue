@@ -116,7 +116,7 @@ export default {
         this.film = res.data.film;
         this.filmtype = res.data.film.item.name;
         this.actors = res.data.film.actors;
-        this.totalPhotos = res.data.film.photos.length;
+        this.totalPhotos = res.data.film.photos?res.data.film.photos.length:'';
         this.photos = res.data.film.photos;
         console.log(this.film);
       });
