@@ -22,7 +22,6 @@ export const changeTime = (arr)=>{
     }else{
         str = weeks[week]+month + "月" +day+ "日"
     }
-    console.log(today,day)
     return str
 }
 export const getScheduleTime = (arr)=>{

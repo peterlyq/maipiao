@@ -33,20 +33,20 @@
         </div>
       </div>
       <div class="schedule-list">
-        <div class="schedule-item" v-for="item in schedule" :key="item.scheduleId">
+        <div class="schedule-item" v-for="item in schedule" :key="item.id">
           <div class="left">
-            <div class="start-at">{{item.showAt |getScheduleTime}}</div>
-            <div class="end-at">{{item.endAt | getScheduleTime}}散场</div>
+            <div class="start-at">{{item.start_time}}</div>
+            <div class="end-at">{{item.end_time}}散场</div>
           </div>
           <div class="middle">
-            <div class="language">{{item.filmLanguage }} {{item.imagery}}</div>
-            <div class="hall">{{item.hallName}}</div>
+            <div class="language">国语</div>
+            <div class="hall">{{item.room}}</div>
           </div>
           <div class="right">
-            <div class="buy-ticket">{{item.isOnsell?'购票':'停售'}}</div>
+            <div class="buy-ticket" @click="buy(item.room_id,40)">购票</div>
             <div class="lowest-price">
               <span class="price-icon">￥</span>
-              {{item.salePrice/100}}
+              40
             </div>
           </div>
         </div>
@@ -55,13 +55,13 @@
   </div>
 </template>
 <script>
-import { getCinemaSchedule } from "@/api/cinema";
+import { getSchedule } from "@/api/cinema";
+import { getCookie } from "@/utils/local-data";
 export default {
   props: ["data"],
   data() {
-    console.log(this.data.filmId);
     return {
-      schedule: []
+      schedule: [],
     };
   },
   watch: {
@@ -75,16 +75,20 @@ export default {
   },
   methods: {
     getData() {
-      getCinemaSchedule({
-        cid: this.$route.params.cid,
-        fid: this.$route.params.fid,
-        date: this.$route.params.date
-      }).then(res => {
-        if (res.status == 0){
-          console.log("当前时间安排是：", res.data.schedules);
-           this.schedule = res.data.schedules
+            console.log(this.data)
+      getSchedule().then(res => {
+        if (res.status == 200) {
+          this.schedule = res.data.result;
         }
       });
+    },
+    buy(room_id,price) {
+      let token = getCookie("COOKIE_USER_X_TOKEN");
+      if (!token) {
+        this.$router.push("/login");
+      } else {
+        this.$router.push({name:'orderList',params:{rid:room_id,price,data:this.data.name}})
+      }
     }
   }
 };

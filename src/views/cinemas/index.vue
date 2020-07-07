@@ -13,6 +13,7 @@
   </div>
 </template>
 <script>
+import {getCinemas} from "@/utils/local-data";
 import { getCinemaList } from "@/api/cinema";
 import CinemaList from "./components/List";
 import MzFooter from "@/components/Footer";
@@ -43,7 +44,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["CinemaLists"])
+    ...mapState(["CinemaLists","cityId"])
   },
   created() {
     this.getData();
@@ -53,9 +54,20 @@ export default {
         ...mapMutations(['setCinemaLists','setCinemaLis']),
     getData() {
       getCinemaList().then(res => {
+
+      getCinemas(this.cityId).then(result=>{
+        if(result.status == 200 && result.data.status == 0){
+          result.data.cinemas.forEach(item=>{
+            console.log(item)
+            res.data.cinemas.unshift(item)
+          })
+           console.log(res.data.cinemas)
         this.setCinemaLists(JSON.stringify(res.data.cinemas))
         this.setCinemaLis(res.data.cinemas)
         this.init();
+        }
+      })
+       
       });
       
     },
@@ -63,7 +75,6 @@ export default {
       if (index !== 0) {
         let city = JSON.parse(this.CinemaLists)[index].districtName,
           cinemaList = [];
-          console.log(city)
         JSON.parse(this.CinemaLists).forEach(item => {
           if (item.districtName == city) {
             cinemaList.push(item);
@@ -76,7 +87,6 @@ export default {
     },
     init() {
         let citys = [];
-        console.log(JSON.parse(this.CinemaLists))
     JSON.parse(this.CinemaLists).forEach(item => {
           if (citys.indexOf(item.districtName) == -1) {
             citys.push(item.districtName);

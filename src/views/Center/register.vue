@@ -13,37 +13,29 @@
               maxlength="11"
               onkeyup="this.value=this.value.replace(/\D/g,'')"
               v-model="Tel"
-              placeholder="账号"
+              placeholder="账号至少9位"
             />
-            <div :style="{'display':flag}">
+            <!-- <div :style="{'display':flag}">
               <div class="clear-mobile-btn">
                 <i
                   @click="clear"
                   style="position: absolute; right: 90px; line-height: 40px; font-size: 23px; color: rgb(189, 192, 197);"
                 >x</i>
               </div>
-            </div>
-            <div
+            </div>-->
+            <!-- <div
               class="getSmsCode sms-code"
               :class="{'disable':flag2}"
               style="position: absolute; right: 0px; top: 13px;"
             >
-            </div>
+            </div>-->
           </div>
           <div class="errorTip">{{errMsg}}</div>
-          <!---->
           <div class="form-group">
             <input placeholder="密码" type="password" class="input-control" v-model="code" />
           </div>
-          <!---->
-          <!---->
-          <div class="submit">
-            <span class="login" @click="login">登录</span>
-          </div>
           <div class="register">
-            <router-link :to="{path:'register'}">
-              <span class="login">注册</span>
-            </router-link>
+            <span class="login" @click="register">注册</span>
           </div>
         </form>
         <!---->
@@ -52,9 +44,8 @@
   </div>
 </template>
 <script>
-import { getMes, logNow } from "@/api/login";
-import { setCookie } from "@/utils/local-data";
-import {mapMutations} from 'vuex'
+import { regNow } from "@/api/login";
+// import { setCookie } from "@/utils/local-data";
 export default {
   data() {
     return {
@@ -62,51 +53,76 @@ export default {
       code: "",
       time: 60 * 1000,
       flag: false,
-      flag1: true,
+      // flag1: true,
       flag2: "none",
       errMsg: "",
       response: ""
     };
   },
-  watch: {
-    Tel(val, value) {
-      if (val.length == 11) {
-        this.flag1 = false;
-      } else {
-        this.flag1 = true;
-      }
-    },
-    immediate: true
-  },
+  // watch: {
+  //   Tel(val, value) {
+  //     if (val.length == 11) {
+  //       this.flag1 = false;
+  //     } else {
+  //       this.flag1 = true;
+  //     }
+  //   },
+  //   immediate: true
+  // },
   methods: {
-    ...mapMutations(['setUser']),
-    login() {
-      if(this.Tel.length < 9){
-        this.$toast.fail('账号格式不正确')
-      }else{
+    register() {
+      if (this.Tel.length < 9) {
+        this.$toast.fail("账号格式不正确");
+      } else {
         let _this = this;
-      logNow(this.Tel, this.code).then(res => {
-        if (res.status == 200) {
-          if (res.data.status == 0) {
-            let token = res.data.token,
-                username = res.data.username,
-                id = res.data.id;
-            setCookie("COOKIE_USER_NAME", username, { expires: 14, path: "/" ,day:'7d'});
-            setCookie("COOKIE_USER_X_TOKEN", token, { expires: 14, path: "/",day:'7d'});
-            setCookie("COOKIE_USER_X_ID", id, { expires: 14, path: "/",day:'7d'});
-            _this.$toast.success(res.data.msg);
-            this.$router.push('/center');
-          } else {
-            _this.$toast.fail(res.data.msg);
+        regNow(this.Tel, this.code).then(res => {
+          if (res.status == 200) {
+            if (res.data.status == 0) {
+              _this.$toast.success(res.data.msg);
+              this.$router.push("/login");
+            } else {
+              _this.$toast.fail(res.data.msg);
+            }
           }
-        }
-    
-      });
+        });
       }
-    },
-    clear() {
-      this.Tel = "";
     }
+    // start() {
+    //   if (this.Tel !== "") {
+    //     getMes(this.Tel).then(res => {
+    //       this.errMsg = res.msg;
+    //       this.$refs.countDown.start();
+    //       this.flag = true;
+    //     });
+    //   } else {
+    //     alert("手机号为空");
+    //   }
+    // },
+    // finished() {
+    //   this.flag = false;
+    // },
+    // login() {
+    //   console.log(1);
+    //   logNow(this.Tel, this.code).then(res => {
+    //     console.log(res);
+    //     if (res.status == 0) {
+    //       let token = res.data.token,
+    //         mobile = res.data.mobile,
+    //         userName = res.data.accountName,
+    //         userId = res.data.userId;
+    //       setCookie("COOKIE_USER_ID", userId, { expires: 14, path: "/" });
+    //       setCookie("COOKIE_USER_MOBILE", mobile, { expires: 14, path: "/" });
+    //       setCookie("COOKIE_USER_NAME", userName, { expires: 14, path: "/" });
+    //       setCookie("COOKIE_USER_X_TOKEN", token, { expires: 14, path: "/" });
+    //       this.$router.push("/center");
+    //     } else if (res.status == 6102) {
+    //       alert(res.msg);
+    //     }
+    //   });
+    // },
+    // clear() {
+    //   this.Tel = "";
+    // }
   }
 };
 </script>
@@ -198,7 +214,6 @@ body {
     .errorTip {
       text-align: left;
       color: #ff5f16;
-      // width: 100%;
       line-height: 11px;
       margin-left: 25px;
       font-size: 11px;

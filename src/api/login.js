@@ -1,48 +1,17 @@
 import request from '@/utils/request'
-// 获取所有城市的数据
-export const getMes = (phone) => {
-
-    return request({
-        method:'post',
-        url: '/gateway',
-        data: {
-            xHost: 'mall.user.sms-code.send',
-            imgCode: "",
-            imgKey: "",
-            mobile: phone,
-            type: "1",
-        }
-    })
-
-}
-export const logNow = (phone,code) => {
-    return request({
-        method:'post',
-        url: '/gateway',
-        data: {
-            xHost: 'mall.user.sms-code-login',
-            imgCode: "",
-            imgKey: "",
-            mobile: phone,
-            smsCode: code,
-            type: "1",
-        }
-    })
-
-}
-export const getUserInfo = (token) => {
+import axios from "axios"
+export const logNow = (username, password ) =>{
     
-    return request({
-        method:'get',
-        url: '/gateway?k=9020178',
-        headers:{
-            "X-Token": token
-        },  
-        data: {
-            xHost: 'mall.user.info.get',
-        }
-    })
+    return axios.post('http://localhost:8082/html/login',{ username,password })
 
+}
+export const getUserInfo = (token, username ) => {
+
+    return axios.post('http://localhost:8082/html/userInfo',{ token,username })
+
+}
+export const saveUser = (token,User)=>{
+    return axios.post('http://localhost:8082/html/updateUser',{ token,User })
 }
 export const getCard = (token) => {
     
@@ -58,18 +27,28 @@ export const getCard = (token) => {
     })
     
 }
-export const getMoney = (token) => {
-    
-    return request({
-        method:'get',
-        url: '/gateway?k=9020178',
-        headers:{
-            "X-Token": token
-        },  
-        data: {
-            xHost: 'mall.asset.balance.info',
-        }
-    })
+export const getMoney = (token,id) => {
+    return axios.get('http://localhost:8082/html/money?id='+id)
+    // return request({
+    //     method:'get',
+    //     url: '/gateway?k=9020178',
+    //     headers:{
+    //         "X-Token": token
+    //     },  
+    //     data: {
+    //         xHost: 'mall.asset.balance.info',
+    //     }
+    // })
 
 }
 
+export const regNow = (username, password )=>{
+   return axios.post('http://localhost:8082/html/register',{ username,password })
+}
+export const changePass = (username,password, newpass )=>{
+    return axios.post('http://localhost:8082/html/repass',{username, password,newpass })
+ }
+ export const changePayPass = (username,password, newpass )=>{
+    return axios.post('http://localhost:8082/html/repaypass',{username, password,newpass })
+ }
+ 

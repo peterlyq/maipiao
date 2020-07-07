@@ -166,6 +166,7 @@ export default {
       if (result.length) {
         this.flag2 = false;
       } else {
+        
         this.flag2 = true;
       }
     },

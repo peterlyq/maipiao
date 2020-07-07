@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {getCityId,getCityName,getCinemaList,setCinemaList} from "@/utils/local-data"
+import {getCityId,getCityName,getCinemaList,setCinemaList,getCookie} from "@/utils/local-data"
 import { stat } from 'fs'
 Vue.use(Vuex)
 
@@ -9,7 +9,7 @@ export default new Vuex.Store({
     cityId:getCityId(),
     cityName:getCityName(),
     CinemaLists:getCinemaList()||'',//string
-    CinemaLis:[]
+    CinemaLis:[],
   },
   mutations: {
     setCityId(state,val){
@@ -27,6 +27,12 @@ export default new Vuex.Store({
     setCinemaLis(state,val){
       state.CinemaLis = val
       // console.log(state.CinemaLis)
+    },
+    setUser(state,val){
+      console.log(state)
+      state[Object.keys(val)[0]] = val[Object.keys(val)[0]]
+      console.log(state)
+  
     }
   },
   actions: {

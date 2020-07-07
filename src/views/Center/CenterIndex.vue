@@ -3,9 +3,13 @@
     <div class="main">
       <div class="center-view" data-enter-time="1571280786">
         <div class="avatar" data-enter-time="1571280786" data-click-fun="track_f_347498">
-          <img :src= userInfo?userInfo.headIcon:image class="avator-icon" @click="$router.push('/user')" />
+          <img :src="userInfo.img_url" class="avator-icon" @click="$router.push('/user')" />
           <div v-if="!userInfo" class="nick-name" @click="$router.push('/login')">立即登录</div>
-          <div class="nick-name" @click="$router.push('/user')" v-if="userInfo">{{userInfo.nickName}}</div>
+          <div
+            class="nick-name"
+            @click="$router.push('/user')"
+            v-if="userInfo"
+          >{{userInfo.nickname?userInfo.nickname:'昵称未设置'}}</div>
         </div>
         <ul class="my-order-tab">
           <li data-enter-time="1571280786" data-click-fun="track_f_814862">
@@ -18,27 +22,16 @@
             <div class="common-p">商品订单</div>
           </li>
         </ul>
-
-        <!---->
-        <div
-          class="margin-set my-card"
-          data-enter-time="1571280786"
-          data-click-fun="track_f_664003"
-        >
-          <img src="@/assets/images/mzq.png" width="20px" height="20px" alt />
-          <span class="label" @click="$router.push('/user/card')">卖座券</span>
-          <img src="@/assets/images/next.png" alt class="arrow" />
-        </div>
         <div
           class="margin-set my-card"
           data-enter-time="1571280786"
           data-click-fun="track_f_622882"
         >
           <img src="@/assets/images/wallet.png" width="20px" height="20px" alt />
-          <span class="label" @click="$router.push('/user/redpackage')">组合红包</span>
+          <span class="label" @click="$router.push('/user/Money')">余额</span>
           <img src="@/assets/images/next.png" alt class="arrow" />
         </div>
-        <div
+        <!-- <div
           class="margin-set my-balance"
           data-enter-time="1571280786"
           data-click-fun="track_f_593614"
@@ -56,7 +49,7 @@
             </span>
           </span>
           <img src="@/assets/images/next.png" alt class="arrow" />
-        </div>
+        </div>-->
         <div
           class="margin-set system-set"
           data-enter-time="1571280786"
@@ -66,6 +59,24 @@
           <span class="label" @click="$router.push('/center/setting')">设置</span>
           <img src="@/assets/images/next.png" alt class="arrow" />
         </div>
+        <div
+          class="margin-set my-card"
+          data-enter-time="1571280786"
+          data-click-fun="track_f_664003"
+        >
+          <img src="@/assets/images/cook.png" width="20px" height="20px" alt />
+          <span class="label" @click="$router.push('/center/repass')">修改密码</span>
+          <img src="@/assets/images/next.png" alt class="arrow" />
+        </div>
+        <div
+          class="margin-set my-card"
+          data-enter-time="1571280786"
+          data-click-fun="track_f_664003"
+        >
+          <img src="@/assets/images/mzq.png" width="20px" height="20px" alt />
+          <span class="label" @click="logOut()">退出登录</span>
+          <img src="@/assets/images/next.png" alt class="arrow" />
+        </div>
       </div>
     </div>
     <mz-footer></mz-footer>
@@ -73,47 +84,56 @@
 </template>
 <script>
 import MzFooter from "@/components/Footer";
-import {getCookie} from "@/utils/local-data";
-import {getUserInfo,getCard,getMoney} from "@/api/login"
+import { getCookie, delCookie } from "@/utils/local-data";
+import { getUserInfo, getCard, getMoney } from "@/api/login";
 export default {
   components: {
     MzFooter
   },
-  data(){
-    return{
-      // userId:getCookie('COOKIE_USER_ID'),
-      // userName:getCookie('COOKIE_USER_NAME'),
-      // mobile:getCookie('COOKIE_USER_MOBILE'),
-      token:getCookie('COOKIE_USER_X_TOKEN'),
-      userInfo:'',
-      image:require("@/assets/images/login.png"),
-      cards:'',
-      money:'',
-    }
+  data() {
+    return {
+      username: getCookie("COOKIE_USER_NAME"),
+      token: getCookie("COOKIE_USER_X_TOKEN"),
+      userInfo: "",
+      image: require("@/assets/images/login.png"),
+      cards: "",
+      money: ""
+    };
   },
-  created(){
-    this.init()
+  created() {
+    this.init();
   },
-  methods:{
-    init(){
-      if(this.token){
-        getUserInfo(this.token).then(res=>{
-          this.userInfo = res.data
-          this.getCards()
-          this.getMoneyInfo()
-        })
+  methods: {
+    init() {
+      if (this.token) {
+        getUserInfo(this.token, this.username).then(res => {
+          this.userInfo = res.data.data;
+          // this.getCards()
+          // this.getMoneyInfo()
+        });
       }
     },
-    getCards(){
-      getCard(this.token).then(res=>{
-        this.cards = res.data
-      })
+    getCards() {
+      getCard(this.token).then(res => {
+        this.cards = res.data;
+      });
     },
-    getMoneyInfo(){
-      getMoney(this.token).then(res=>{
-        console.log(res.data)
-        this.money = res.data
-      })
+    getMoneyInfo() {
+      getMoney(this.token).then(res => {
+        this.money = res.data;
+      });
+    },
+    logOut() {
+      if (getCookie("COOKIE_USER_X_TOKEN")) {
+        delCookie("COOKIE_USER_NAME");
+        delCookie("COOKIE_USER_X_TOKEN");
+        delCookie("COOKIE_USER_X_ID");  
+        this.$toast.success("退出成功");
+        this.$router.go(0);
+      }else{
+          this.$toast.fail("请先登录！");
+          this.$router.push('/login')
+      }
     }
   }
 };
@@ -220,30 +240,28 @@ body {
     -webkit-align-items: center;
     -ms-flex-align: center;
     align-items: center;
-    img{
-
-    width: 20px;
-    height: 20px;
-
+    img {
+      width: 20px;
+      height: 20px;
     }
- .label {
-    margin-left: 15px;
-    color: #191a1b;
-    -webkit-box-flex: 1;
-    -webkit-flex: 1;
-    -ms-flex: 1;
-    flex: 1;
-}
- .value {
-    text-align: right;
-    color: #797d82;
-    padding-right: 14px;
-}
-.arrow {
-    text-align: right;
-    width: 6px;
-    height: 10px;
-}
+    .label {
+      margin-left: 15px;
+      color: #191a1b;
+      -webkit-box-flex: 1;
+      -webkit-flex: 1;
+      -ms-flex: 1;
+      flex: 1;
+    }
+    .value {
+      text-align: right;
+      color: #797d82;
+      padding-right: 14px;
+    }
+    .arrow {
+      text-align: right;
+      width: 6px;
+      height: 10px;
+    }
   }
 }
 </style>

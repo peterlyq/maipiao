@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import axios from 'axios'
 export const getCinemaList = () =>{
     return request({
         url:'/gateway?__CITYID__&ticketFlag=1&k=2907376',
@@ -30,4 +31,7 @@ export const getCinemaSchedule = (params = {fid:4795,cid:4722,date:1570636800}) 
             xHost:'mall.film-ticket.schedule.list'
         }
     })
+}
+export const getSchedule = () =>{
+    return axios.get('http://localhost:8082/html/schedule')
 }

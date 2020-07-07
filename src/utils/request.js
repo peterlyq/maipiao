@@ -17,7 +17,6 @@ service.interceptors.request.use(
     },
     error => {
       // do something with request error
-      console.log(error) // for debug
       return Promise.reject(error)
     }
   )
@@ -36,7 +35,6 @@ service.interceptors.request.use(
      */
     response => {
       const res = response.data
-      console.log(res)
       // if the custom code is not 20000, it is judged as an error.
       if (res.status !== 0) {
         // console.log('请求有误',res.msg)

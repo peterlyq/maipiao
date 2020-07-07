@@ -1,7 +1,13 @@
 <template>
   <div v-if="cinemaInfo" class="cinema-schedule">
     <div data-v-1ed7d58f class="header-left">
-      <img data-v-1ed7d58f src="~@/assets/images/back1.png" width="11px" height="18px" @click="$router.push('/cinemas')"/>
+      <img
+        data-v-1ed7d58f
+        src="~@/assets/images/back1.png"
+        width="11px"
+        height="18px"
+        @click="$router.push('/cinemas')"
+      />
       <img
         data-v-1ed7d58f
         src="~@/assets/images/back1.png"
@@ -46,7 +52,7 @@
         <img data-v-1ed7d58f src="~@/assets/images/phone.png" width="17px" height="18px" alt />
       </a>
     </div>
-    <div >
+    <div>
       <cinema-banner :dat="cinemaFilm" v-if="cinemaFilm.length" @selectElv="changeFilm($event)"></cinema-banner>
       <router-view :data="activeFilmInfo" v-if="activeFilmInfo"></router-view>
     </div>
@@ -54,6 +60,7 @@
 </template>
 <script>
 import { getCinemaInfo, getCinemaFilms } from "@/api/cinema";
+import { getCenima } from "@/utils/local-data";
 import CinemaBanner from "./components/Banner";
 export default {
   components: {
@@ -71,7 +78,6 @@ export default {
     "$route.params.cid": {
       handler(val) {
         this.cid = val;
-        console.log(this.cid)
         this.getCinemaDetail();
         this.getFilms();
       },
@@ -80,21 +86,32 @@ export default {
   },
   methods: {
     getCinemaDetail() {
-      getCinemaInfo({ cid: this.cid }).then(res => {
-        this.cinemaInfo = res.data.cinema;
-        console.log(this.cinemaInfo)
-      });
+      console.log(this.cid);
+      if (this.cid < 100) {
+        getCenima(this.cid).then(res => {
+          console.log(res.data);
+          this.cinemaInfo = res.data.cinemaInfo[0];
+        });
+      } else {
+        getCinemaInfo({ cid: this.cid }).then(res => {
+          console.log(res)
+          this.cinemaInfo = res.data.cinema;
+        });
+      }
     },
     getFilms() {
+      if(this.cid <100){
+       getCinemaFilms({ cid: 2202 }).then(res => {
+        this.cinemaFilm = res.data.films;
+      });
+      }
       getCinemaFilms({ cid: this.cid }).then(res => {
         this.cinemaFilm = res.data.films;
-        // console.log(this.cinemaFilm[0])
       });
     },
     changeFilm(val) {
       this.activeFilmInfo = this.cinemaFilm[val];
       let date = this.activeFilmInfo.showDate[0];
-      console.log(this.activeFilmInfo);
       this.$router.push(
         `/cinemas/${this.cid}/film/${this.activeFilmInfo.filmId}/${date}`
       );
@@ -104,18 +121,18 @@ export default {
 </script>
 <style scoped lang="scss">
 .address {
-    height: 50px;
-    position: relative;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    padding-left: 17px;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    align-items: center;
-    .address-des {
+  height: 50px;
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  padding-left: 17px;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  .address-des {
     font-size: 14px;
     height: 20px;
     padding: 0 12px;
@@ -128,15 +145,13 @@ export default {
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
     white-space: nowrap;
-  
-
-}
-.tel-icon[data-v-1ed7d58f] {
-    // height: 18px;  
+  }
+  .tel-icon[data-v-1ed7d58f] {
+    // height: 18px;
     padding: 0 25px;
-      outline: 0 none;
+    outline: 0 none;
     border: none;
-}
+  }
 }
 .cinema-schedule {
   overflow: hidden;
