@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>测试</title>
+    <style>
+        .bd{
+            width: 500px;
+            height: 300px;
+            margin: 0 auto;
+            border: 1px solid grey;
+        }
+    </style>
+</head>
+<body>
+    <form action="https://www.baidu.com" class="bd" method="post"  id="tijiao">
+        <label for="mail">邮箱：</label> &nbsp;&nbsp;<input type="mail" required id="mail" pattern="^\w+@\w+(\.[a-zA-Z]{2,3}){1,2}$"/><br>
+        <label for="user">用户名：</label><input type="text" name="user" required id="user" ><br>
+        <label for="pass">密 码：</label> &nbsp;&nbsp;<input type="password" required name="pass" id="pass"><br>
+        <select name="city" id="city">
+          
+            <option value="成都" >成都</option>
+            <option value="重庆">重庆</option>
+            <option value="深圳">深圳</option>
+            <option value="上海">上海</option>
+        </select><br>
+        <button >提交</button>
+    </form>
+</body>
+<script>
+    function Person(name,age,gender){
+        this.name = name;
+        this.gender = gender;
+        this.age = age;
+        this.say=function(){
+            console.log("my name is :"+this.name)
+        }
+    }
+    tijiao.onsubmit = function(e){
+
+        e.preventDefault()
+    }
+    var zhangsan = new Person('zhangsan',20,'boy')
+    var anxios = function(){
+        let p = new Promise(function(resolve,reject){
+        setTimeout(()=>{console.log('promise执行')},1000)
+    })
+    return p
+    }
+   
+    anxios.then(res=>{
+        console.log('成功')
+    })
+    console.log(anxios)
+   
+</script>
+</html>
